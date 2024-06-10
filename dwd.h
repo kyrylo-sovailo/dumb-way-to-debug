@@ -77,7 +77,7 @@ namespace DWD
     auto head = [=]() -> void { \
         if (DWD::LOGLEVEL >= 0) \
         { \
-            DWD::PRINT(DWD_FLASH("DWD Function \"" DWD_STRINGIZE(_NAME) "\" called\n")); \
+            DWD::PRINT(DWD_FLASH("DWD Function \"" DWD_STRINGIZE(_NAME) "\" at "  __FILE__ ":" DWD_STRINGIZE(__LINE__) "\n")); \
             __DWD_FOR2S(__DWD_PRINT_NAME, __VA_ARGS__) \
         } \
     }; \

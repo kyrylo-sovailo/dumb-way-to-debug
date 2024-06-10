@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 project(DWD)
-add_compile_options(-Wall -Wextra -pedantic -std=c++11)
+add_compile_options(-Wall -Wextra -pedantic)
 
 add_library(dwd_desktop STATIC dwd.cpp dwd_desktop.cpp)
 

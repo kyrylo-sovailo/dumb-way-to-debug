@@ -5,8 +5,19 @@
 //Variables and functions
 namespace DWD
 {
-    extern std::vector<std::function<void()>> STACK;
+    struct GUARD;
+
     extern int LOGLEVEL;
+    extern GUARD *TOP;
+
+    struct GUARD
+    {
+        GUARD *previous;
+        std::function<void()> head;
+        GUARD(std::function<void()> head);
+        ~GUARD();
+    };
+    
     void EXIT(int code);
 }
 
@@ -30,7 +41,7 @@ namespace DWD
 #define __DWD_ARGUMENT_N(_1, _2, _3, _4, _5, _6, _7, _8, _N, ...) _N
 #define __DWD_SEQUENCE() 8, 7, 6, 5, 4, 3, 2, 1, 0
 
-#define __DWD_FOR_1(_KERNEL, _A, ...) _KERNEL(_A)
+#define __DWD_FOR_1(_KERNEL, _A)      _KERNEL(_A)
 #define __DWD_FOR_2(_KERNEL, _A, ...) _KERNEL(_A); __DWD_FOR_1(_KERNEL, __VA_ARGS__);
 #define __DWD_FOR_3(_KERNEL, _A, ...) _KERNEL(_A); __DWD_FOR_2(_KERNEL, __VA_ARGS__);
 #define __DWD_FOR_4(_KERNEL, _A, ...) _KERNEL(_A); __DWD_FOR_3(_KERNEL, __VA_ARGS__);
@@ -41,14 +52,14 @@ namespace DWD
 #define __DWD_FOR_(_N, _KERNEL, _A, ...) DWD_CONCATENATE(__DWD_FOR_, _N)(_KERNEL, _A, __VA_ARGS__)
 #define __DWD_FOR(_KERNEL, _A, ...) __DWD_FOR_(__DWD_APPEND_SEQUENCE(_A, __VA_ARGS__), _KERNEL, _A, __VA_ARGS__)
 
-#define __DWD_FOR2S_2(_KERNEL, _A, _B, ...) _KERNEL(_A, _B);
+#define __DWD_FOR2S_2(_KERNEL, _A, _B)      _KERNEL(_A, _B);
 #define __DWD_FOR2S_4(_KERNEL, _A, _B, ...) _KERNEL(_A, _B); __DWD_FOR2S_2(_KERNEL, __VA_ARGS__);
 #define __DWD_FOR2S_6(_KERNEL, _A, _B, ...) _KERNEL(_A, _B); __DWD_FOR2S_4(_KERNEL, __VA_ARGS__);
 #define __DWD_FOR2S_8(_KERNEL, _A, _B, ...) _KERNEL(_A, _B); __DWD_FOR2S_6(_KERNEL, __VA_ARGS__);
 #define __DWD_FOR2S_(_N, _KERNEL, _A, _B, ...) DWD_CONCATENATE(__DWD_FOR2S_, _N)(_KERNEL, _A, _B, __VA_ARGS__)
 #define __DWD_FOR2S(_KERNEL, _A, _B, ...) __DWD_FOR2S_(__DWD_APPEND_SEQUENCE(_A, _B, __VA_ARGS__), _KERNEL, _A, _B, __VA_ARGS__)
 
-#define __DWD_FOR2C_2(_KERNEL, _A, _B, ...) _KERNEL(_A, _B)
+#define __DWD_FOR2C_2(_KERNEL, _A, _B)      _KERNEL(_A, _B)
 #define __DWD_FOR2C_4(_KERNEL, _A, _B, ...) _KERNEL(_A, _B), __DWD_FOR2C_2(_KERNEL, __VA_ARGS__)
 #define __DWD_FOR2C_6(_KERNEL, _A, _B, ...) _KERNEL(_A, _B), __DWD_FOR2C_4(_KERNEL, __VA_ARGS__)
 #define __DWD_FOR2C_8(_KERNEL, _A, _B, ...) _KERNEL(_A, _B), __DWD_FOR2C_6(_KERNEL, __VA_ARGS__)
@@ -63,7 +74,6 @@ namespace DWD
 //Functionality
 #define __DWD_STACK_HEAD(_LOGLEVEL, _TYPE, _NAME, ...) _TYPE _NAME(__DWD_FOR2C(__DWD_LIST_TYPE_NAME, __VA_ARGS__)) \
 { \
-    struct __DWD_STACK_GUARD_TYPE { ~__DWD_STACK_GUARD_TYPE() { DWD::STACK.pop_back(); }} __DWD_STACK_GUARD; \
     auto head = [=]() -> void { \
         if (DWD::LOGLEVEL >= 0) \
         { \
@@ -71,7 +81,7 @@ namespace DWD
             __DWD_FOR2S(__DWD_PRINT_NAME, __VA_ARGS__) \
         } \
     }; \
-    DWD::STACK.push_back(head);
+    DWD::GUARD guard(head);
 
 #define DWD_PRINT(_LOGLEVEL, _TYPE, _NAME, ...) __DWD_STACK_HEAD(_LOGLEVEL, _TYPE, _NAME, __VA_ARGS__) \
     head(); \

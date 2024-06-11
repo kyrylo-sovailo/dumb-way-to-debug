@@ -1,28 +1,93 @@
 #include "dwd_desktop.h"
 
-int simple_add(int a, int b)
+int function(int a, int b)
 {
     return a + b;
 }
 
-DWD_PRINT_TRACE(int, print_add, int, a, int, b)
+void void_function(int a, int b)
 {
-    return a + b;
 }
-DWD_END()
 
-DWD_CATCH_TRACE(int, catch_add, int, a, int, b)
+int function_void()
 {
-    if (a > 100 || b > 100) DWD::EXIT(1);
+    return 1;
+}
+
+void void_function_void()
+{
+}
+
+class Example
+{
+private:
+    int _field = 60;
+
+public:
+    Example(int a, int b);
+    Example();
+    ~Example();
+
+    int method(int a, int b);
+    void void_method(int a, int b);
+    int method_void();
+    void void_method_void();
+
+    int method_const(int a, int b) const;
+    void void_method_const(int a, int b) const;
+    int method_void_const() const;
+    void void_method_void_const() const;
+};
+
+Example::Example(int a, int b)
+{
+}
+
+Example::Example()
+{
+}
+
+Example::~Example()
+{
+}
+
+int Example::method(int a, int b)
+{
+    return _field + a + b;
+}
+
+void Example::void_method(int a, int b)
+{
+}
+
+int Example::method_void()
+{
+    return _field + 1;
+}
+
+void Example::void_method_void()
+{
+}
+
+int Example::method_const(int a, int b) const
+{
     return a + b;
 }
-DWD_END()
+
+void Example::void_method_const(int a, int b) const
+{
+}
+
+int Example::method_void_const() const
+{
+    return _field + 1;
+}
+
+void Example::void_method_void_const() const
+{
+}
 
 int main()
 {
-    simple_add(1, 2);
-    print_add(1, 2);
-    catch_add(1, 2);
-    catch_add(100, 200);
     return 0;
 }

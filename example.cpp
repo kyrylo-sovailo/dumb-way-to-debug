@@ -1,13 +1,15 @@
 #include "dwd_desktop.h"
 
-int function(int a, int b)
+DWD_TRACE(int, function, int, a, int, b)
 {
     return a + b;
 }
+DWD_END()
 
-void void_function(int a, int b)
+DWD_TRACE_VOID(void_function, int, a, int, b)
 {
 }
+DWD_END()
 
 int function_void()
 {
@@ -87,7 +89,28 @@ void Example::void_method_void_const() const
 {
 }
 
+int _main()
+{
+    function(1, 2);
+    void_function(1, 2);
+    function_void();
+    void_function_void();
+
+    Example example;
+    Example example2(1, 2);
+    example.method(1, 2);
+    example.void_method(1, 2);
+    example.method_void();
+    example.void_method_void();
+    example.method_const(1, 2);
+    example.void_method(1, 2);
+    example.method_void_const();
+    example.void_method_void_const();
+
+    return 0;
+}
+
 int main()
 {
-    return 0;
+    return _main();
 }

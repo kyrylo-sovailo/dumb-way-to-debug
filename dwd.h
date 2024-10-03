@@ -21,14 +21,6 @@ namespace DWD
     void EXIT(int code);
 }
 
-//Constants
-#define DWD_FATAL 1
-#define DWD_ERROR 2
-#define DWD_WARN 3
-#define DWD_INFO 4
-#define DWD_DEBUG 5
-#define DWD_TRACE 6
-
 //For loops
 #define DWD_STRINGIZE(_A)  __DWD_STRINGIZE1(_A)
 #define __DWD_STRINGIZE1(_A) __DWD_STRINGIZE2(_A)
@@ -83,13 +75,13 @@ namespace DWD
     }; \
     DWD::GUARD guard(head);
 
-#define DWD_PRINT(_LOGLEVEL, _TYPE, _NAME, ...) __DWD_STACK_HEAD(_LOGLEVEL, _TYPE, _NAME, __VA_ARGS__) \
+#define DWD_WRAP_VERBOSE(_LOGLEVEL, _TYPE, _NAME, ...) __DWD_STACK_HEAD(_LOGLEVEL, _TYPE, _NAME, __VA_ARGS__) \
     head(); \
     constexpr bool print_tail = true; \
     auto function = [=]() -> _TYPE \
     {
 
-#define DWD_CATCH(_LOGLEVEL, _TYPE, _NAME, ...) __DWD_STACK_HEAD(_LOGLEVEL, _TYPE, _NAME, __VA_ARGS__) \
+#define DWD_WRAP(_LOGLEVEL, _TYPE, _NAME, ...) __DWD_STACK_HEAD(_LOGLEVEL, _TYPE, _NAME, __VA_ARGS__) \
     constexpr bool print_tail = false; \
     auto function = [=]() -> _TYPE \
     {
@@ -109,16 +101,16 @@ namespace DWD
 }
 
 //Shortcuts
-#define DWD_PRINT_FATAL(_TYPE, _NAME, ...) DWD_PRINT(DWD_FATAL, _TYPE, _NAME, __VA_ARGS__)
-#define DWD_PRINT_ERROR(_TYPE, _NAME, ...) DWD_PRINT(DWD_ERROR, _TYPE, _NAME, __VA_ARGS__)
-#define DWD_PRINT_WARN( _TYPE, _NAME, ...) DWD_PRINT(DWD_WARN,  _TYPE, _NAME, __VA_ARGS__)
-#define DWD_PRINT_INFO( _TYPE, _NAME, ...) DWD_PRINT(DWD_INFO,  _TYPE, _NAME, __VA_ARGS__)
-#define DWD_PRINT_DEBUG(_TYPE, _NAME, ...) DWD_PRINT(DWD_DEBUG, _TYPE, _NAME, __VA_ARGS__)
-#define DWD_PRINT_TRACE(_TYPE, _NAME, ...) DWD_PRINT(DWD_TRACE, _TYPE, _NAME, __VA_ARGS__)
+#define DWD_FATAL_VERBOSE(_TYPE, _NAME, ...) DWD_WRAP_VERBOSE(1, _TYPE, _NAME, __VA_ARGS__)
+#define DWD_ERROR_VERBOSE(_TYPE, _NAME, ...) DWD_WRAP_VERBOSE(2, _TYPE, _NAME, __VA_ARGS__)
+#define DWD_WARN_VERBOSE( _TYPE, _NAME, ...) DWD_WRAP_VERBOSE(3, _TYPE, _NAME, __VA_ARGS__)
+#define DWD_INFO_VERBOSE( _TYPE, _NAME, ...) DWD_WRAP_VERBOSE(4, _TYPE, _NAME, __VA_ARGS__)
+#define DWD_DEBUG_VERBOSE(_TYPE, _NAME, ...) DWD_WRAP_VERBOSE(5, _TYPE, _NAME, __VA_ARGS__)
+#define DWD_TRACE_VERBOSE(_TYPE, _NAME, ...) DWD_WRAP_VERBOSE(6, _TYPE, _NAME, __VA_ARGS__)
 
-#define DWD_CATCH_FATAL(_TYPE, _NAME, ...) DWD_CATCH(DWD_FATAL, _TYPE, _NAME, __VA_ARGS__)
-#define DWD_CATCH_ERROR(_TYPE, _NAME, ...) DWD_CATCH(DWD_ERROR, _TYPE, _NAME, __VA_ARGS__)
-#define DWD_CATCH_WARN( _TYPE, _NAME, ...) DWD_CATCH(DWD_WARN,  _TYPE, _NAME, __VA_ARGS__)
-#define DWD_CATCH_INFO( _TYPE, _NAME, ...) DWD_CATCH(DWD_INFO,  _TYPE, _NAME, __VA_ARGS__)
-#define DWD_CATCH_DEBUG(_TYPE, _NAME, ...) DWD_CATCH(DWD_DEBUG, _TYPE, _NAME, __VA_ARGS__)
-#define DWD_CATCH_TRACE(_TYPE, _NAME, ...) DWD_CATCH(DWD_TRACE, _TYPE, _NAME, __VA_ARGS__)
+#define DWD_FATAL(_TYPE, _NAME, ...) DWD_WRAP(1, _TYPE, _NAME, __VA_ARGS__)
+#define DWD_ERROR(_TYPE, _NAME, ...) DWD_WRAP(2, _TYPE, _NAME, __VA_ARGS__)
+#define DWD_WARN( _TYPE, _NAME, ...) DWD_WRAP(3, _TYPE, _NAME, __VA_ARGS__)
+#define DWD_INFO( _TYPE, _NAME, ...) DWD_WRAP(4, _TYPE, _NAME, __VA_ARGS__)
+#define DWD_DEBUG(_TYPE, _NAME, ...) DWD_WRAP(5, _TYPE, _NAME, __VA_ARGS__)
+#define DWD_TRACE(_TYPE, _NAME, ...) DWD_WRAP(6, _TYPE, _NAME, __VA_ARGS__)
